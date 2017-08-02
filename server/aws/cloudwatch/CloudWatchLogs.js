@@ -1,5 +1,5 @@
 const AWS         = require("aws-sdk");
-const {promisify} = require('../utils/promisify');
+const {promisify} = require('../../utils/promisify');
 
 const accessKeyId     = "";
 const secretAccessKey = "";
@@ -11,7 +11,8 @@ class CloudWatchLogs {
   }
 
   listLogGroups() {
-    return promisify((handle) => this.cloudWatchLogs.describeLogGroups({}, handle))
+    const config = {};
+    return promisify((handle) => this.cloudWatchLogs.describeLogGroups(config, handle))
       .then(({logGroups}) => logGroups);
   }
 

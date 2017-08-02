@@ -14,7 +14,8 @@
     "aws-sdk": "^2.94.0",
     "body-parser": "^1.17.2",
     "browser-request": "^0.3.3",
-    "express": "^4.15.3"
+    "express": "^4.15.3",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
