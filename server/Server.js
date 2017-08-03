@@ -4,8 +4,8 @@ const bodyParser = require("body-parser");
 const PORT = 3000;
 
 class Server {
-  constructor(logger, modules = []) {
-    this.logger = logger;
+  constructor(modules = [], logger) {
+    this.logger = logger.registerClass(this);
     logger.info("Starting server");
 
     this.app = express();

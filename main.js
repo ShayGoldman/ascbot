@@ -3,8 +3,9 @@ const ENV = require('dotenv').config();
 if (!ENV) throw new Error("No ENV :(");
 const {debugOn} = process.env;
 const Logger = require('./server/Logger');
-const logger = new Logger(debugOn);
+const logger = new Logger({debugOn}).register("Env");
 
+if (debugOn) logger.debug("Debug data available");
 logger.info("Environment loaded");
 logger.info("Loading dependencies");
 
@@ -40,10 +41,10 @@ const findMostRecentStreams = new FindMostRecentStreams(cloudWatchLogs);
 const findMostRecentLogs    = new FindMostRecentLogs(findMostRecentStreams, cloudWatchLogs);
 const teamKeysDao           = new TeamKeysDao(dbc);
 
-const server = new Server(logger, [
+const server = new Server([
   new ServePublicFiles(),
   new HandleErrors(),
   new DemoController(cloudWatchLogs, findMostRecentLogs, teamKeysDao)
-]);
+], logger);
 
 server.start();

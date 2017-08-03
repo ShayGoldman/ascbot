@@ -5,7 +5,7 @@ class DBClient {
   constructor(opts, logger) {
     const params = overrideDefaults({connectionLimit: 10}, opts);
     this.pool    = mysql.createPool(params);
-    this.logger  = logger;
+    this.logger  = logger.registerClass(this);
   }
 
   query(query, args) {

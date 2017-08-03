@@ -6,23 +6,34 @@ const error = chalk.red;
 
 class Logger {
 
-  constructor(debugOn) {
+  constructor(opts) {
+    const {debugOn, caller} = opts;
     this.debugOn = debugOn;
-    if (debugOn) this.debug("Debug data available");
+    this.caller = caller ? `[${caller}]::` : "";
+  }
+
+  registerClass(caller) {
+    const {debugOn} = this;
+    return new Logger({debugOn, caller: caller.constructor.name});
+  }
+
+  register(caller) {
+    const {debugOn} = this;
+    return new Logger({debugOn, caller});
   }
 
   info(msg) {
-    console.log(info(msg));
+    console.log(info(`${this.caller}${msg}`));
   }
 
   debug(msg) {
     if (this.debugOn) {
-      console.log(debug(msg));
+      console.log(debug(`${this.caller}${msg}`));
     }
   }
 
   error(msg) {
-    console.log(error(msg));
+    console.log(error(`${this.caller}${msg}`));
   }
 
 }
