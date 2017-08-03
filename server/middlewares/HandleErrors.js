@@ -5,11 +5,14 @@ const errorMap = {
 };
 
 class HandleErrors {
+  constructor(logger) {
+    this.logger = logger.registerClass(this);
+  }
 
   attachTo(app) {
     app.use((err, req, res, next) => {
       if (err) {
-        console.log("@@@ ERROR:", err);
+        this.logger.error(err);
         const errorHandler = errorMap[err.constructor.name] || error500Generic;
         err.stack          = {};
         errorHandler(res, err);

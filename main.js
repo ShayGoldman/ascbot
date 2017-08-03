@@ -43,8 +43,8 @@ const teamKeysDao           = new TeamKeysDao(dbc);
 
 const server = new Server([
   new ServePublicFiles(),
-  new HandleErrors(),
-  new DemoController(cloudWatchLogs, findMostRecentLogs, teamKeysDao)
+  new DemoController(cloudWatchLogs, findMostRecentLogs, teamKeysDao),
+  new HandleErrors(logger),
 ], logger);
 
 server.start();
