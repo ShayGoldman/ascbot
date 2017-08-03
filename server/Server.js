@@ -4,9 +4,9 @@ const bodyParser = require("body-parser");
 const PORT = 3000;
 
 class Server {
-  constructor(modules = []) {
-
-    console.log("@@@ Starting server");
+  constructor(logger, modules = []) {
+    this.logger = logger;
+    logger.info("Starting server");
 
     this.app = express();
     this.app.use(bodyParser.json());
@@ -23,7 +23,7 @@ class Server {
 
   start() {
     this.app.listen(PORT, () => {
-      console.log(`@@@ Server available at: http://localhost:${PORT}`);
+      this.logger.debug(`Server available at: http://localhost:${PORT}`);
     })
   }
 }

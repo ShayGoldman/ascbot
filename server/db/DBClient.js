@@ -1,16 +1,11 @@
-const mysql = require('mysql');
-
-const opts = {
-  host: '',
-  user: '',
-  password: '',
-  database: '',
-  connectionLimit: 10
-};
+const {overrideDefaults} = require('../utils/overrideDefaults');
+const mysql              = require('mysql');
 
 class DBClient {
-  constructor() {
-    this.pool = mysql.createPool(opts);
+  constructor(opts, logger) {
+    const params = overrideDefaults({connectionLimit: 10}, opts);
+    this.pool    = mysql.createPool(params);
+    this.logger  = logger;
   }
 
   query(query, args) {
@@ -18,7 +13,7 @@ class DBClient {
       this._getConnection()
         .then((conn) => {
           const formatted = mysql.format(query, args);
-          console.log("@@@ QUERY ", formatted)
+          this.logger.debug(`Query: ${formatted}`);
           conn.query(formatted, (err, results) => {
             if (err) {
               conn.release();

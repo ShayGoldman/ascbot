@@ -1,3 +1,13 @@
+const ENV = require('dotenv').config();
+
+if (!ENV) throw new Error("No ENV :(");
+const {debugOn} = process.env;
+const Logger = require('./server/Logger');
+const logger = new Logger(debugOn);
+
+logger.info("Environment loaded");
+logger.info("Loading dependencies");
+
 const Server           = require('./server/Server');
 const ServePublicFiles = require('./server/middlewares/ServePublicFiles');
 const HandleErrors     = require('./server/middlewares/HandleErrors');
@@ -7,18 +17,30 @@ const FindMostRecentStreams = require('./server/aws/cloudwatch/FindMostRecentStr
 const FindMostRecentLogs    = require('./server/aws/cloudwatch/FindMostRecentLogs');
 
 const DemoController = require('./server/DemoController');
-const DBClient = require('./server/db/DBClient');
-const TeamKeysDao = require('./server/db/TeamKeysDao');
+const DBClient       = require('./server/db/DBClient');
+const TeamKeysDao    = require('./server/db/TeamKeysDao');
 
+// ENV
+const {cloudWatchAccessKey, cloudWatchSecretKey} = process.env;
+const {dbHost, dbUser, dbPassword, dbDatabase}   = process.env;
 
 // DI
-const dbc = new DBClient();
-const cloudWatchLogs        = new CloudWatchLogs({region: "eu-west-1"});
+const dbc                   = new DBClient({
+  host: dbHost,
+  user: dbUser,
+  password: dbPassword,
+  database: dbDatabase
+}, logger);
+const cloudWatchLogs        = new CloudWatchLogs({
+  region: "eu-west-1",
+  accessKeyId: cloudWatchAccessKey,
+  secretAccessKey: cloudWatchSecretKey
+});
 const findMostRecentStreams = new FindMostRecentStreams(cloudWatchLogs);
 const findMostRecentLogs    = new FindMostRecentLogs(findMostRecentStreams, cloudWatchLogs);
-const teamKeysDao = new TeamKeysDao(dbc);
+const teamKeysDao           = new TeamKeysDao(dbc);
 
-const server = new Server([
+const server = new Server(logger, [
   new ServePublicFiles(),
   new HandleErrors(),
   new DemoController(cloudWatchLogs, findMostRecentLogs, teamKeysDao)
