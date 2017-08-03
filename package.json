@@ -15,7 +15,8 @@
     "body-parser": "^1.17.2",
     "browser-request": "^0.3.3",
     "express": "^4.15.3",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "mysql": "^2.14.1"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",

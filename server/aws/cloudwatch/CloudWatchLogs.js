@@ -1,6 +1,7 @@
 const AWS         = require("aws-sdk");
 const {promisify} = require('../../utils/promisify');
 
+
 const accessKeyId     = "";
 const secretAccessKey = "";
 
@@ -10,24 +11,28 @@ class CloudWatchLogs {
     this.cloudWatchLogs = new AWS.CloudWatchLogs(config);
   }
 
-  listLogGroups() {
-    const config = {};
-    return promisify((handle) => this.cloudWatchLogs.describeLogGroups(config, handle))
+  listLogGroups(opts) {
+    const params = overrideDefaultConfig({}, opts);
+    return promisify((handle) => this.cloudWatchLogs.describeLogGroups(params, handle))
       .then(({logGroups}) => logGroups);
   }
 
   listStreams(logGroupName, opts) {
-    const config = Object.assign({}, {logGroupName}, {descending: true, limit: 10, orderBy: "LastEventTime"}, opts);
-    return promisify((handle) => this.cloudWatchLogs.describeLogStreams(config, handle))
+    const params = overrideDefaultConfig({descending: true, orderBy: "LastEventTime"}, opts, {logGroupName});
+    return promisify((handle) => this.cloudWatchLogs.describeLogStreams(params, handle))
       .then(({logStreams}) => logStreams);
   }
 
   listLogs(logGroupName, logStreamName, opts) {
-    const config = Object.assign({}, {logGroupName, logStreamName}, {limit: 100}, opts);
-    return promisify((handle) => this.cloudWatchLogs.getLogEvents(config, handle))
+    const params = overrideDefaultConfig({}, opts, {logGroupName, logStreamName});
+    return promisify((handle) => this.cloudWatchLogs.getLogEvents(params, handle))
       .then(({events}) => events);
   }
 
+}
+
+function overrideDefaultConfig(defaults, ...overrides) {
+  return Object.assign({}, defaults, ...overrides);
 }
 
 module.exports = CloudWatchLogs;
