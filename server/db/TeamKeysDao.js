@@ -1,11 +1,12 @@
-const Dao      = require('./Dao');
-const DBMapper = require('./DBMapper');
+const Dao            = require('./Dao');
+const DBMapper       = require('./DBMapper');
 
 const mapper = new DBMapper({
   "team_id": "teamId",
   "access_key_id": "accessKeyId",
   "secret_access_key": "secretAccessKey"
 });
+
 
 class TeamKeysDao extends Dao {
   constructor(dbc) {
@@ -21,7 +22,7 @@ class TeamKeysDao extends Dao {
   }
 
   getTeamById(teamId) {
-    return this.select({teamId});
+    return this.selectOne({teamId});
   }
 
   updateKey(teamId, keys) {

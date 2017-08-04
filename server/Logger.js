@@ -6,7 +6,7 @@ const error = chalk.red;
 
 class Logger {
 
-  constructor(opts) {
+  constructor(opts = {}) {
     const {debugOn, caller} = opts;
     this.debugOn = debugOn;
     this.caller = caller ? `[${caller}]::` : "";

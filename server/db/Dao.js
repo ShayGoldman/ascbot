@@ -1,4 +1,6 @@
-const isEmpty = require('lodash/isEmpty');
+const isEmpty                   = require('lodash/isEmpty');
+const {requireSqlModulesAsText} = require('../../ops/db/requireSqlModulesAsText');
+requireSqlModulesAsText();
 
 class Dao {
   constructor(dbc, table, mapper) {
@@ -8,12 +10,12 @@ class Dao {
   }
 
   select(where) {
-    const ands = getAndsForWhere(where);
     return Promise.resolve()
       .then(() => {
-        if (ands.length === 0) {
+        if (isEmpty(where)) {
           return this.dbc.query(`SELECT * FROM ??`, [this.table])
         } else {
+          const ands        = getAndsForWhere(where);
           const whereFields = this._mapObjectToArray(where);
           return this.dbc.query(`SELECT * FROM ?? WHERE ?${ands}`, [this.table, ...whereFields])
         }
@@ -24,11 +26,14 @@ class Dao {
   selectOne(where) {
     return Promise.resolve()
       .then(() => this.select(where))
-      .then((results) => results[0]);
+      .then((results) => results[0] || {});
   }
 
   insert(item) {
-    return this.dbc.query(`INSERT INTO ?? SET ?`, [this.table, this.mapper.mapToDB(item)])
+    const mapped = this.mapper.mapToDB(item);
+    const keys   = Object.keys(mapped);
+    const values = keys.reduce((out, key) => out.concat(mapped[key]), []);
+    return this.dbc.query(`INSERT INTO ?? (?) VALUES (?)`, [this.table, keys, values]);
   }
 
   update(where, set) {
