@@ -3,10 +3,11 @@ const {requireSqlModulesAsText} = require('../../ops/db/requireSqlModulesAsText'
 requireSqlModulesAsText();
 
 class Dao {
-  constructor(dbc, table, mapper) {
+  constructor(dbc, table, mapper, entity) {
     this.dbc    = dbc;
     this.table  = table;
     this.mapper = mapper;
+    this.Entity = entity;
   }
 
   select(where) {
@@ -20,7 +21,7 @@ class Dao {
           return this.dbc.query(`SELECT * FROM ?? WHERE ?${ands}`, [this.table, ...whereFields])
         }
       })
-      .then((results) => results.map((result) => this.mapper.mapFromDB(result)));
+      .then((results) => results.map((result) => new this.Entity(this.mapper.mapFromDB(result))));
   }
 
   selectOne(where) {

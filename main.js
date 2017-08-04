@@ -19,7 +19,7 @@ const FindMostRecentLogs    = require('./server/aws/cloudwatch/FindMostRecentLog
 
 const DemoController = require('./server/DemoController');
 const DBClient       = require('./server/db/DBClient');
-const TeamKeysDao    = require('./server/db/TeamKeysDao');
+const TeamKeysDao    = require('./server/teams/TeamKeysDao');
 
 // ENV
 const {cloudWatchAccessKey, cloudWatchSecretKey} = process.env;

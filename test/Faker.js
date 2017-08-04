@@ -2,6 +2,7 @@ const {overrideDefaults} = require('../server/utils/overrideDefaults');
 
 const faker = require("faker");
 const uuid  = require("uuid");
+const TeamKeys = require('../server/teams/models/TeamKeys');
 
 class Faker {
 
@@ -16,7 +17,7 @@ class Faker {
       secretAccessKey: Faker.uuid()
     }, overrides);
 
-    return data;
+    return new TeamKeys(data);
   }
 }
 

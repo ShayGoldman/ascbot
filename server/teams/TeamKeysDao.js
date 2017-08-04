@@ -1,5 +1,6 @@
-const Dao            = require('./Dao');
-const DBMapper       = require('./DBMapper');
+const Dao      = require('../db/Dao');
+const DBMapper = require('../db/DBMapper');
+const TeamKeys = require('./models/TeamKeys');
 
 const mapper = new DBMapper({
   "team_id": "teamId",
@@ -10,7 +11,7 @@ const mapper = new DBMapper({
 
 class TeamKeysDao extends Dao {
   constructor(dbc) {
-    super(dbc, "teams_aws_keys", mapper);
+    super(dbc, "teams_aws_keys", mapper, TeamKeys);
   }
 
   getAllKeys() {
