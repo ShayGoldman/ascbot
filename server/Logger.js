@@ -32,8 +32,8 @@ class Logger {
     }
   }
 
-  error(msg) {
-    console.log(error(`${this.caller}${msg}`));
+  error(err) {
+    console.log(error(`${this.caller}${err.stack || err}`));
   }
 
 }
