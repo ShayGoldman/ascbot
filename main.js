@@ -2,8 +2,8 @@ const ENV = require('dotenv').config();
 
 if (!ENV) throw new Error("No ENV :(");
 const {debugOn} = process.env;
-const Logger = require('./server/Logger');
-const logger = new Logger({debugOn}).register("Env");
+const Logger    = require('./server/Logger');
+const logger    = new Logger({debugOn}).register("Env");
 
 if (debugOn) logger.debug("Debug data available");
 logger.info("Environment loaded");
@@ -17,33 +17,41 @@ const CloudWatchLogs        = require('./server/aws/cloudwatch/CloudWatchLogs');
 const FindMostRecentStreams = require('./server/aws/cloudwatch/FindMostRecentStreams');
 const FindMostRecentLogs    = require('./server/aws/cloudwatch/FindMostRecentLogs');
 
-const DemoController = require('./server/DemoController');
-const DBClient       = require('./server/db/DBClient');
-const TeamKeysDao    = require('./server/teams/TeamKeysDao');
+const DemoController     = require('./server/DemoController');
+const SlackBotController = require('./server/bot/SlackBotController');
+const DBClient           = require('./server/db/DBClient');
+const TeamKeysDao        = require('./server/teams/TeamKeysDao');
+
+const {SlackBot} = require('./server/bot/SlackBot');
 
 // ENV
 const {cloudWatchAccessKey, cloudWatchSecretKey} = process.env;
 const {dbHost, dbUser, dbPassword, dbDatabase}   = process.env;
+const {slackAppClientId, slackAppClientSecret}   = process.env;
 
 // DI
-const dbc                   = new DBClient({
+const dbc            = new DBClient({
   host: dbHost,
   user: dbUser,
   password: dbPassword,
   database: dbDatabase
 }, logger);
-const cloudWatchLogs        = new CloudWatchLogs({
+
+const cloudWatchLogs = new CloudWatchLogs({
   region: "eu-west-1",
   accessKeyId: cloudWatchAccessKey,
   secretAccessKey: cloudWatchSecretKey
 });
+
+const slackBot = new SlackBot({clientId: slackAppClientId, clientSecret: slackAppClientSecret}, logger);
+
 const findMostRecentStreams = new FindMostRecentStreams(cloudWatchLogs);
 const findMostRecentLogs    = new FindMostRecentLogs(findMostRecentStreams, cloudWatchLogs);
 const teamKeysDao           = new TeamKeysDao(dbc);
 
 const server = new Server([
   new ServePublicFiles(),
-  new DemoController(cloudWatchLogs, findMostRecentLogs, teamKeysDao),
+  new SlackBotController(slackBot),
   new HandleErrors(logger),
 ], logger);
 

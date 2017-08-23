@@ -3,9 +3,16 @@ const mysql              = require('mysql');
 
 class DBClient {
   constructor(opts, logger) {
-    const params = overrideDefaults({connectionLimit: 10}, opts);
-    this.pool    = mysql.createPool(params);
-    this.logger  = logger.registerClass(this);
+    const params      = overrideDefaults({connectionLimit: 10}, opts);
+    this.pool         = mysql.createPool(params);
+    this.logger       = logger.registerClass(this);
+    this.isPoolActive = true;
+
+    process.on("exit", () => {
+      if (this.isPoolActive) {
+        this.pool.end();
+      }
+    });
   }
 
   query(query, args) {

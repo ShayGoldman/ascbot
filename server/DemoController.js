@@ -9,7 +9,6 @@ class DemoController {
   }
 
   attachTo(app) {
-
     app.get("/logs/latest", ...openEndpoint(() => {
       return this.findMostRecentLogs.findMostRecentLogs(1, 10);
     }));

@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 
-const PORT = 3000;
+const PORT = 8080;
 
 class Server {
   constructor(modules = [], logger) {
