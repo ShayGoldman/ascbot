@@ -13,7 +13,7 @@ class SlackBotController {
         // TODO: Solve syntax error
       this.teamKeysDao.insert({
           teamId: bot.config.id,
-          botToken: config.token,
+          teamToken: config.token,
           accessKeyId: "test",
           secretAccessKey: "secretAccessKey"
       })

@@ -1,11 +1,11 @@
 class TeamKeys {
 
   constructor(data) {
-    const {teamId, accessKeyId, secretAccessKey, botToken} = data;
-    this.teamId                                  = teamId;
-    this.accessKeyId                             = accessKeyId;
-    this.secretAccessKey                         = secretAccessKey;
-    this.botToken                                = botToken;
+    const {teamId, teamToken, accessKeyId, secretAccessKey} = data;
+    this.teamId                                             = teamId;
+    this.teamToken                                          = teamToken;
+    this.accessKeyId                                        = accessKeyId;
+    this.secretAccessKey                                    = secretAccessKey;
   }
 
 }
