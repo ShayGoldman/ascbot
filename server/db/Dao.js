@@ -34,7 +34,7 @@ class Dao {
     const mapped = this.mapper.mapToDB(item);
     const keys   = Object.keys(mapped);
     const values = keys.reduce((out, key) => out.concat(mapped[key]), []);
-    return this.dbc.query(`INSERT INTO ?? (?) VALUES (?)`, [this.table, keys, values]);
+    return this.dbc.query(`INSERT INTO ?? (?) VALUES (?)`, [this.table, keys, values])
   }
 
   update(where, set) {

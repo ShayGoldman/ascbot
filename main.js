@@ -51,7 +51,7 @@ const teamKeysDao           = new TeamKeysDao(dbc);
 
 const server = new Server([
   new ServePublicFiles(),
-  new SlackBotController(slackBot),
+  new SlackBotController(slackBot, teamKeysDao),
   new HandleErrors(logger),
 ], logger);
 

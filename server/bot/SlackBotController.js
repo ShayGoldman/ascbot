@@ -1,18 +1,28 @@
 const {receivesDirectMessage} = require("./SlackBot");
+const {TeamKeysDao} = require("../teams/TeamKeysDao");
 
 class SlackBotController {
 
-  constructor(slackBot) {
+  constructor(slackBot, teamKeysDao) {
     this.slackBot = slackBot;
+    this.teamKeysDao = teamKeysDao;
   }
 
   listenForInstallations() {
     this.slackBot.addEventHook("create_bot", (bot, config) => {
+        // TODO: Solve syntax error
+      this.teamKeysDao.insert({
+          teamId: bot.config.id,
+          botToken: config.token,
+          accessKeyId: "test",
+          secretAccessKey: "secretAccessKey"
+      })
 
       bot.startRTM((err) => {
         if (err) bot.destoryRTM();
         else {
           bot.startPrivateConversation({user: config.createdBy}, (err, convo) => {
+
             if (!err) {
               convo.say('Ask for help');
             }
@@ -23,7 +33,6 @@ class SlackBotController {
   }
 
   attachTo(app) {
-
     this.slackBot.setupOAuth(app);
     this.listenForInstallations();
 
@@ -32,6 +41,9 @@ class SlackBotController {
       .when(receivesDirectMessage("help"))
       .reply("F U")
       .close();
+
+    this.teamKeysDao.getAllKeys()
+        .each(key => this.slackBot.listen(key.botToken))
   }
 }
 

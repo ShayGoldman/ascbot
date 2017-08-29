@@ -15,6 +15,10 @@ class SlackBot {
     return new this.InteractionBuilder();
   }
 
+  listen(token) {
+      this._bot.spawn({token: token}).startRTM()
+   }
+
   setupOAuth(app) {
     this._bot.createOauthEndpoints(app, (err, req, res) => {
       if (err) return error500(res, err);
