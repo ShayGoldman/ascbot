@@ -4,6 +4,7 @@ const TeamKeys = require('./models/TeamKeys');
 
 const mapper = new DBMapper({
   "team_id": "teamId",
+  "team_token": "teamToken",
   "access_key_id": "accessKeyId",
   "secret_access_key": "secretAccessKey"
 });

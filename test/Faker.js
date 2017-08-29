@@ -13,6 +13,7 @@ class Faker {
   static TeamKey(overrides = {}) {
     const data = overrideDefaults({
       teamId: Faker.uuid(),
+      teamToken: Faker.uuid(),
       accessKeyId: Faker.uuid(),
       secretAccessKey: Faker.uuid()
     }, overrides);
