@@ -1,5 +1,5 @@
-const {receivesDirectMessage} = require("./SlackBot");
 const TeamKeys = require("../teams/models/TeamKeys");
+const behaviors = require("./behaviors");
 
 class SlackBotController {
 
@@ -35,14 +35,7 @@ class SlackBotController {
   attachTo(app) {
     this.slackBot.setupOAuth(app);
     this.listenForInstallations();
-
-
-
-    this.slackBot
-      .newInteraction()
-      .when(receivesDirectMessage("help"))
-      .reply("F U")
-      .close();
+    behaviors.start(this.slackBot, "*");
 
     //listen to all the teams
     this.teamKeysDao.getAllKeys()
