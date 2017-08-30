@@ -10,7 +10,7 @@ class SlackBotController {
 
   listenForInstallations() {
     this.slackBot.addEventHook("create_bot", (bot, config) => {
-        // TODO: Solve syntax error
+
       this.teamKeysDao.insert(new TeamKeys({
           teamId: bot.config.id,
           teamToken: config.token,
