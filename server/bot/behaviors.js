@@ -9,7 +9,7 @@ const {receivesDirectMessage} = require("./SlackBot");
 const behaviors = {
     help: function (bot) {
         bot.newInteraction()
-          .when(receivesDirectMessage("help"))
+          .when(receivesDirectMessage("help me"))
           .reply("F U")
           .close();
     }
