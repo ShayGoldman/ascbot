@@ -10,7 +10,7 @@ class SlackBotController {
 
   listenForInstallations() {
     this.slackBot.addEventHook("create_bot", (bot, config) => {
-
+      // save the new team to the db
       this.teamKeysDao.insert(new TeamKeys({
           teamId: bot.config.id,
           teamToken: config.token,
@@ -36,14 +36,17 @@ class SlackBotController {
     this.slackBot.setupOAuth(app);
     this.listenForInstallations();
 
+
+
     this.slackBot
       .newInteraction()
       .when(receivesDirectMessage("help"))
       .reply("F U")
       .close();
 
-    // this.teamKeysDao.getAllKeys()
-    //     .each(key => this.slackBot.listen(key.botToken))
+    //listen to all the teams
+    this.teamKeysDao.getAllKeys()
+        .then(keys => keys.forEach(key => this.slackBot.listen(key.teamToken)))
   }
 }
 
