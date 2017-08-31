@@ -24,29 +24,40 @@ class SlackBotController {
           bot.startPrivateConversation({user: config.createdBy}, (err, convo) => {
 
             if (!err) {
-              convo.say('Hello my friend.');
-              convo.say('Before we can start I need to get read access to your CloudWatch')
-              convo.say([
-                'We keep your information secure.',
-                'But its recommended that you will create a new IAM with specific roles'
-            ].join(' '))
-              const question1 = 'When you ready, please reply with the IAM AWS key:'
-              convo.addQuestion(question1, function (response, convo) {
-                  // TODO: save the response as the key
-                  convo.say('Thanks')
-                  const question2 = 'Now The AWS secret please:'
-                  convo.addQuestion(question2, function (response, convo) {
-                      // TODO: save the response as the secret
-                      convo.say('Thats it. Now I am at your service, you can always send `help me` to see how i can help you')
-                      convo.next()
-                  })
-                  convo.next()
-              })
+                this.askForAwsTokens(bot, convo)
             }
           });
         }
       });
     });
+  }
+
+  askForAwsTokens(bot, convo) {
+      const teamKeysDao = this.teamKeysDao
+      const hello = `Hello my friend,
+Before we can start I need to have read access to your CloudWatch.
+Note that we keep your information secure.
+But its recommended that you will create a new IAM with specific roles`
+      const question1 = 'When you ready, please reply with the AWS accessKeyId:'
+      const question2 = 'Now The AWS secretAccessKey please:'
+      const conclusion = `Thats it. Now I am at your service,
+you can always send \`help me\` to see how i can help you`
+      convo.say(hello);
+      convo.addQuestion(question1, function (response1, convo) {
+          convo.say('Thanks')
+
+          convo.addQuestion(question2, function (response2, convo) {
+              console.log(response1)
+              console.log(response2)
+              teamKeysDao.updateKey(bot.config.id, {
+                  accessKeyId: response1.text,
+                  secretAccessKey: response2.text
+              })
+              convo.say(conclusion)
+              convo.next()
+          })
+          convo.next()
+      })
   }
 
   attachTo(app) {
