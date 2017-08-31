@@ -4,6 +4,7 @@ const {overrideDefaults} = require('../../utils/overrideDefaults');
 
 class CloudWatchLogs {
   constructor(config) {
+    config.region || (config.region = "us-west-2")
     this.cloudWatchLogs = new AWS.CloudWatchLogs(config);
   }
 
@@ -26,7 +27,5 @@ class CloudWatchLogs {
   }
 
 }
-
-
 
 module.exports = CloudWatchLogs;

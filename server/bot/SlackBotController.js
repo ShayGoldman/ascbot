@@ -47,8 +47,6 @@ you can always send \`help me\` to see how i can help you`
           convo.say('Thanks')
 
           convo.addQuestion(question2, function (response2, convo) {
-              console.log(response1)
-              console.log(response2)
               teamKeysDao.updateKey(bot.config.id, {
                   accessKeyId: response1.text,
                   secretAccessKey: response2.text
@@ -63,7 +61,7 @@ you can always send \`help me\` to see how i can help you`
   attachTo(app) {
     this.slackBot.setupOAuth(app);
     this.listenForInstallations();
-    behaviors.start(this.slackBot, "*");
+    behaviors.start(this.slackBot, "*", this.teamKeysDao);
 
     //listen to all the teams
     this.teamKeysDao.getAllKeys()
